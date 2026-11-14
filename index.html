@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LSPD — Incident Report (Detective ACC)</title>
+  <title>LSPD — Detective Case Review & ACC Report</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +20,7 @@
       width: 100%;
       max-width: 820px;
       background-color: #ffffff;
-      border: 1.5px solid #64748b;
+      border: 1.5px solid #0f172a;
       padding: 30px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
@@ -35,7 +35,7 @@
     }
     .doc-header img { width: 50px; height: auto; margin-bottom: 4px; }
     .doc-header h1 { font-size: 15px; font-weight: bold; color: #0f172a; text-transform: uppercase; }
-    .doc-header h2 { font-size: 12px; font-weight: bold; color: #334155; margin-top: 2px; text-transform: uppercase; }
+    .doc-header h2 { font-size: 12px; font-weight: bold; color: #b91c1c; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
 
     .status-strip {
       display: flex;
@@ -50,14 +50,15 @@
       font-size: 11px;
       font-weight: bold;
       padding: 3px 10px;
-      border: 2px solid #dc2626;
-      color: #dc2626;
-      background: #fff;
+      border: 2px solid #16a34a;
+      color: #16a34a;
+      background: #f0fdf4;
       text-transform: uppercase;
     }
-    .status-pill.closed {
-      border-color: #16a34a;
-      color: #16a34a;
+    .status-pill.rejected {
+      border-color: #dc2626;
+      color: #dc2626;
+      background: #fef2f2;
     }
 
     .grid-table {
@@ -68,10 +69,9 @@
     }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; }
     .row-3 { display: grid; grid-template-columns: 1.2fr 0.9fr 0.9fr; }
-    .row-poi { display: grid; grid-template-columns: 1.5fr 1fr 1fr 30px; }
     
     @media (max-width: 600px) {
-      .row-2, .row-3, .row-poi { grid-template-columns: 1fr; }
+      .row-2, .row-3 { grid-template-columns: 1fr; }
     }
 
     .cell {
@@ -160,23 +160,6 @@
       object-fit: contain;
     }
 
-    /* DETECTIVE ACC SECTION STYLING */
-    .acc-section {
-      border: 2px dashed #0f172a;
-      background: #f1f5f9;
-      padding: 10px;
-      margin-top: 15px;
-    }
-    .acc-title {
-      font-size: 10px;
-      font-weight: bold;
-      color: #0f172a;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      border-bottom: 1px solid #cbd5e1;
-      padding-bottom: 4px;
-    }
-
     .controls {
       width: 100%;
       max-width: 820px;
@@ -213,81 +196,54 @@
   <div class="doc-header">
     <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Logo">
     <h1>LOS SANTOS POLICE DEPARTMENT</h1>
-    <h2>INCIDENT REPORT</h2>
+    <h2>DETECTIVE BUREAU — INCIDENT REVIEW & ACC REPORT</h2>
   </div>
 
   <!-- STATUS STRIP -->
   <div class="status-strip">
     <div style="display:flex; align-items:center; gap:8px;">
-      <span style="font-size:10px; font-weight:bold; color:#475569;">INCIDENT STATUS:</span>
-      <span class="status-pill" id="status-pill">OPEN</span>
+      <span style="font-size:10px; font-weight:bold; color:#475569;">REVIEW STATUS:</span>
+      <span class="status-pill" id="status-pill">ACCEPTED (ACC)</span>
     </div>
     <div style="display:flex; align-items:center; gap:6px;">
-      <label style="font-size:10px; font-weight:bold; color:#475569;">UBAH:</label>
+      <label style="font-size:10px; font-weight:bold; color:#475569;">KEPUTUSAN:</label>
       <select id="case_status" onchange="changeStatus(this.value)" style="font-size:11px; padding:2px; border:1px solid #94a3b8; cursor:pointer;">
-        <option value="OPEN">OPEN</option>
-        <option value="CLOSED">CLOSED</option>
+        <option value="ACCEPTED (ACC)">ACCEPTED (ACC)</option>
+        <option value="PENDING REVIEW">PENDING REVIEW</option>
+        <option value="REJECTED">REJECTED</option>
       </select>
     </div>
   </div>
 
-  <!-- INCIDENT METADATA -->
+  <!-- ORIGINAL INCIDENT REFERENCE -->
+  <div class="sec-heading"><span>1. ORIGINAL INCIDENT REFERENCE</span></div>
   <div class="grid-table">
     <div class="row-2">
-      <div class="cell no-bottom">
-        <label>INCIDENT TYPE</label>
-        <input type="text" id="inc_type" placeholder="Traffic Stop / Felony Pursuit / Shooting">
-      </div>
-      <div class="cell no-bottom">
-        <label>DATE & TIME</label>
-        <input type="text" id="inc_datetime" placeholder="13 November 2026 - 22:53">
-      </div>
+      <div class="cell"><label>INCIDENT TYPE / REF</label><input type="text" id="ref_type" value="Felony Pursuit / Traffic Stop (Aarón Howard)"></div>
+      <div class="cell"><label>ORIGINAL INCIDENT DATE</label><input type="text" id="ref_date" value="13 November 2026 - 22:53"></div>
     </div>
-  </div>
-  <div class="grid-table">
     <div class="row-2">
-      <div class="cell no-bottom">
-        <label>LOCATION</label>
-        <input type="text" id="inc_loc" placeholder="Los Santos Freeway">
-      </div>
-      <div class="cell no-bottom">
-        <label>AREA / DIVISION</label>
-        <input type="text" id="inc_area" placeholder="Harbor Patrol Division">
-      </div>
+      <div class="cell no-bottom"><label>REPORTING OFFICER ASAL</label><input type="text" id="ref_officer" value="Police Officer II, Einstein Medvic (#41766)"></div>
+      <div class="cell no-bottom"><label>DIVISI ASAL</label><input type="text" id="ref_div" value="Harbor Patrol Division"></div>
     </div>
   </div>
 
-  <!-- PERSON(S) OF INTEREST -->
-  <div class="sec-heading">
-    <span>PERSON(S) OF INTEREST</span>
-    <button type="button" class="btn-add" onclick="addPOI()">+ POI</button>
-  </div>
-  <div class="grid-table" id="poi-table">
-    <div class="row-poi poi-row">
-      <div class="cell no-bottom"><label>NAME</label><input type="text" class="poi-name" value="Aarón Howard"></div>
-      <div class="cell no-bottom"><label>ROLE</label><input type="text" class="poi-role" value="Suspect"></div>
-      <div class="cell no-bottom"><label>CONTACT NUMBER</label><input type="text" class="poi-contact" value="N/A"></div>
-      <div class="cell no-bottom" style="display:flex; align-items:center; justify-content:center;">
-        <button type="button" onclick="this.closest('.poi-row').remove()" style="background:#dc2626; color:#fff; border:none; padding:3px 6px; cursor:pointer;">✕</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NARRATIVE -->
+  <!-- DETECTIVE ASSESSMENT & FINDINGS -->
+  <div class="sec-heading"><span>2. DETECTIVE ASSESSMENT & INVESTIGATIVE NOTES</span></div>
   <div class="narrative-box">
-    <label>NARRATIVE</label>
-    <textarea id="narrative" placeholder="On 22:53 13 November 2026, me and Officer Harcovict meet the suspect at the plaza..."></textarea>
+    <label>CASE ANALYSIS & NEXT ACTIONS</label>
+    <textarea id="narrative" placeholder="Analisis laporan insiden dari unit patroli. Catat temuan tambahan, arahan penyelidikan lanjutan, atau instruksi pemanggilan tersangka..."></textarea>
   </div>
 
-  <!-- EVIDENCE / BODYCAM FOOTAGE -->
+  <!-- ADDITIONAL DETECTIVE EVIDENCE / SUBMISSION -->
   <div class="sec-heading">
-    <span>EVIDENCE / BODYCAM FOOTAGE</span>
-    <button type="button" class="btn-add" onclick="addEvidence()">+ Bukti Foto</button>
+    <span>3. DETECTIVE ADDITIONAL EVIDENCE / EXHIBIT</span>
+    <button type="button" class="btn-add" onclick="addEvidence()">+ Bukti Baru</button>
   </div>
   <div id="evidence-list" style="margin-bottom: 12px;">
     <div class="evidence-box">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
-        <input type="text" class="ev-title" value="Bodycam Footage of the suspect with ID card" style="flex:1; border:none; font-weight:bold; font-size:12px; outline:none;">
+        <input type="text" class="ev-title" value="Detective Exhibit 1 — CCTV Footage / Warrant Document" style="flex:1; border:none; font-weight:bold; font-size:12px; outline:none;">
         <button type="button" onclick="this.closest('.evidence-box').remove()" style="background:#dc2626; color:#fff; border:none; padding:2px 6px; font-size:10px; cursor:pointer;">✕</button>
       </div>
       <input type="file" accept="image/*" onchange="loadEvidenceImg(event, this)" style="font-size:11px; cursor:pointer; margin-bottom:4px;">
@@ -295,39 +251,20 @@
     </div>
   </div>
 
-  <!-- REPORTING OFFICER -->
+  <!-- REVIEWING DETECTIVE PERSONNEL -->
+  <div class="sec-heading"><span>4. REVIEWING DETECTIVE / SUPERVISOR SIGN-OFF</span></div>
   <div class="grid-table">
     <div class="row-3">
-      <div class="cell no-bottom"><label>REPORTING OFFICER (NAME & RANK)</label><input type="text" id="off_name" value="Police Officer II, Einstein Medvic"></div>
-      <div class="cell no-bottom"><label>SERIAL NO.</label><input type="text" id="off_serial" value="41766"></div>
-      <div class="cell no-bottom"><label>DIVISION</label><input type="text" id="off_div" value="Harbor Patrol Division"></div>
-    </div>
-  </div>
-
-  <!-- DETECTIVE / BUREAU ACC / FORWARD SECTION -->
-  <div class="acc-section">
-    <div class="acc-title">DETECTIVE BUREAU & SPECIALIZED DIVISION REVIEW / ACC</div>
-    <div class="grid-3" style="background:#fff; border:1px solid #cbd5e1;">
-      <div class="cell"><label>REVIEWING DIVISION</label>
-        <select id="acc_div" style="font-size:11px; padding:2px; border:none; background:transparent; width:100%;">
+      <div class="cell no-bottom"><label>REVIEWING DETECTIVE (NAME & RANK)</label><input type="text" id="det_name" placeholder="Detective Sergeant Name"></div>
+      <div class="cell no-bottom"><label>BADGE / SERIAL NO.</label><input type="text" id="det_serial" placeholder="00000"></div>
+      <div class="cell no-bottom"><label>REVIEWING DIVISION</label>
+        <select id="det_bureau" style="font-size:11px; padding:2px; border:none; background:transparent; width:100%;">
           <option>Major Crime Division</option>
           <option>Major Enforcement Division</option>
           <option>Detective Bureau</option>
           <option>Internal Affairs Division</option>
         </select>
       </div>
-      <div class="cell"><label>DETECTIVE / SUPERVISOR ACC</label><input type="text" id="acc_officer" placeholder="Detective Name & Badge"></div>
-      <div class="cell"><label>STATUS / ACTION</label>
-        <select id="acc_status" style="font-size:11px; padding:2px; border:none; background:transparent; width:100%;">
-          <option>ACCEPTED (ACC) & ASSIGNED</option>
-          <option>PENDING REVIEW</option>
-          <option>FORWARDED / FILED</option>
-          <option>REJECTED</option>
-        </select>
-      </div>
-    </div>
-    <div style="margin-top:6px;">
-      <input type="text" id="acc_notes" placeholder="Notes / Detective Remarks (e.g., Forwarded for further investigation...)" style="width:100%; border:1px solid #cbd5e1; padding:5px; font-size:11px; background:#fff;">
     </div>
   </div>
 </div>
@@ -344,10 +281,10 @@
   function changeStatus(val) {
     const pill = document.getElementById("status-pill");
     pill.textContent = val;
-    if (val === "CLOSED") {
-      pill.classList.add("closed");
+    if (val === "REJECTED") {
+      pill.className = "status-pill rejected";
     } else {
-      pill.classList.remove("closed");
+      pill.className = "status-pill";
     }
   }
 
@@ -364,29 +301,13 @@
     reader.readAsDataURL(file);
   }
 
-  function addPOI() {
-    const table = document.getElementById("poi-table");
-    const row = document.createElement("div");
-    row.className = "row-poi poi-row";
-    row.style.borderTop = "1px solid #cbd5e1";
-    row.innerHTML = `
-      <div class="cell no-bottom"><label>NAME</label><input type="text" class="poi-name" placeholder="Suspect Name"></div>
-      <div class="cell no-bottom"><label>ROLE</label><input type="text" class="poi-role" value="Suspect"></div>
-      <div class="cell no-bottom"><label>CONTACT NUMBER</label><input type="text" class="poi-contact" value="N/A"></div>
-      <div class="cell no-bottom" style="display:flex; align-items:center; justify-content:center;">
-        <button type="button" onclick="this.closest('.poi-row').remove()" style="background:#dc2626; color:#fff; border:none; padding:3px 6px; cursor:pointer;">✕</button>
-      </div>
-    `;
-    table.appendChild(row);
-  }
-
   function addEvidence() {
     const list = document.getElementById("evidence-list");
     const box = document.createElement("div");
     box.className = "evidence-box";
     box.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
-        <input type="text" class="ev-title" value="Evidence / Footage Description" style="flex:1; border:none; font-weight:bold; font-size:12px; outline:none;">
+        <input type="text" class="ev-title" value="Detective Exhibit Description" style="flex:1; border:none; font-weight:bold; font-size:12px; outline:none;">
         <button type="button" onclick="this.closest('.evidence-box').remove()" style="background:#dc2626; color:#fff; border:none; padding:2px 6px; font-size:10px; cursor:pointer;">✕</button>
       </div>
       <input type="file" accept="image/*" onchange="loadEvidenceImg(event, this)" style="font-size:11px; cursor:pointer; margin-bottom:4px;">
@@ -397,53 +318,32 @@
 
   function copyDiscord() {
     const status = document.getElementById("case_status").value;
-    let pois = "";
-    document.querySelectorAll(".poi-row").forEach(r => {
-      const name = r.querySelector(".poi-name").value || "-";
-      const role = r.querySelector(".poi-role").value || "-";
-      const contact = r.querySelector(".poi-contact").value || "-";
-      pois += `> - **${name}** (${role}) — Contact: ${contact}\n`;
-    });
-
     let evs = "";
     document.querySelectorAll(".evidence-box").forEach(box => {
       const title = box.querySelector(".ev-title").value || "-";
       evs += `> - ${title}\n`;
     });
 
-    const txt = `**LOS SANTOS POLICE DEPARTMENT — INCIDENT REPORT**
-**STATUS:** \`${status}\`
+    const txt = `**LOS SANTOS POLICE DEPARTMENT — DETECTIVE CASE REVIEW**
+**REVIEW STATUS:** \`${status}\`
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-* **Incident Type:** ${document.getElementById("inc_type").value || "-"}
-* **Date & Time:** ${document.getElementById("inc_datetime").value || "-"}
-* **Location:** ${document.getElementById("inc_loc").value || "-"} | **Area:** ${document.getElementById("inc_area").value || "-"}
+* **Incident Ref:** ${document.getElementById("ref_type").value || "-"} (${document.getElementById("ref_date").value || "-"})
+* **Reporting Officer Asal:** ${document.getElementById("ref_officer").value || "-"} (${document.getElementById("ref_div").value || "-"})
 
-**[PERSON(S) OF INTEREST]**
-${pois || "> -\n"}
-**[NARRATIVE]**
+**[DETECTIVE ASSESSMENT & NOTES]**
 ${document.getElementById("narrative").value || "-"}
 
-**[EVIDENCE / FOOTAGE]**
+**[ADDITIONAL EVIDENCE / EXHIBIT]**
 ${evs || "> -\n"}
-**[REPORTING OFFICER]**
-* **Name:** ${document.getElementById("off_name").value || "-"} (#${document.getElementById("off_serial").value || "-"}) — ${document.getElementById("off_div").value || "-"}
-
-**[DETECTIVE ACC / REVIEW]**
-* **Reviewing Division:** ${document.getElementById("acc_div").value}
-* **Status:** **${document.getElementById("acc_status").value}**
-* **Reviewer:** ${document.getElementById("acc_officer").value || "Pending Assignment"}
-* **Remarks:** ${document.getElementById("acc_notes").value || "-"}`;
+**[REVIEWING PERSONNEL]**
+* **Reviewer:** ${document.getElementById("det_name").value || "-"} (#${document.getElementById("det_serial").value || "-"})
+* **Division:** ${document.getElementById("det_bureau").value}`;
 
     navigator.clipboard.writeText(txt).then(() => alert("Format Discord berhasil disalin!"));
   }
 
   function copyBBCode() {
     const status = document.getElementById("case_status").value;
-    let pois = "";
-    document.querySelectorAll(".poi-row").forEach(r => {
-      pois += `[tr][td]${r.querySelector(".poi-name").value}[/td][td]${r.querySelector(".poi-role").value}[/td][td]${r.querySelector(".poi-contact").value}[/td][/tr]\n`;
-    });
-
     let evs = "";
     document.querySelectorAll(".evidence-box").forEach(box => {
       const title = box.querySelector(".ev-title").value || "-";
@@ -452,29 +352,19 @@ ${evs || "> -\n"}
 
     const bb = `[divbox=white][center][img]https://i.imgur.com/3fSSqST.png[/img]
 [b]LOS SANTOS POLICE DEPARTMENT[/b]
-[b]INCIDENT REPORT[/b]
-[b]STATUS: ${status}[/b][/center]
+[b]DETECTIVE BUREAU — INCIDENT REVIEW & ACC REPORT[/b]
+[b]REVIEW STATUS: ${status}[/b][/center]
 
-[b]INCIDENT TYPE:[/b] ${document.getElementById("inc_type").value || "-"} | [b]DATE & TIME:[/b] ${document.getElementById("inc_datetime").value || "-"}
-[b]LOCATION:[/b] ${document.getElementById("inc_loc").value || "-"} | [b]AREA:[/b] ${document.getElementById("inc_area").value || "-"}
+[b]ORIGINAL INCIDENT REF:[/b] ${document.getElementById("ref_type").value || "-"} | [b]DATE:[/b] ${document.getElementById("ref_date").value || "-"}
+[b]REPORTING OFFICER ASAL:[/b] ${document.getElementById("ref_officer").value || "-"} (${document.getElementById("ref_div").value || "-"})
 
-[b]PERSON(S) OF INTEREST[/b]
-[table]${pois}[/table]
-
-[b]NARRATIVE[/b]
+[b]DETECTIVE ASSESSMENT & NOTES[/b]
 ${document.getElementById("narrative").value || "-"}
 
-[b]EVIDENCE / BODYCAM FOOTAGE[/b]
+[b]ADDITIONAL EVIDENCE / EXHIBIT[/b]
 ${evs}
 
-[b]REPORTING OFFICER:[/b] ${document.getElementById("inc_type").value || "-"} — ${document.getElementById("off_name").value || "-"} (${document.getElementById("off_serial").value || "-"}) — ${document.getElementById("off_div").value || "-"}
-
-[hr]
-[b]DETECTIVE & SPECIALIZED DIVISION REVIEW (ACC)[/b]
-[b]REVIEWING DIVISION:[/b] ${document.getElementById("acc_div").value}
-[b]STATUS:[/b] [color=#16a34a]${document.getElementById("acc_status").value}[/color]
-[b]REVIEWER:[/b] ${document.getElementById("acc_officer").value || "Pending"}
-[b]REMARKS:[/b] ${document.getElementById("acc_notes").value || "-"}[/divbox]`;
+[b]REVIEWING DETECTIVE:[/b] ${document.getElementById("det_name").value || "-"} (${document.getElementById("det_serial").value || "-"}) — ${document.getElementById("det_bureau").value}[/divbox]`;
 
     navigator.clipboard.writeText(bb).then(() => alert("Format BBCode Forum berhasil disalin!"));
   }
@@ -483,7 +373,7 @@ ${evs}
     const area = document.getElementById("capture-area");
     html2canvas(area, { scale: 2, useCORS: true, allowTaint: true }).then(canvas => {
       const link = document.createElement("a");
-      link.download = "LSPD-Incident-Report-Detective-ACC.png";
+      link.download = "LSPD-Detective-Case-Review.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     }).catch(err => {
@@ -494,5 +384,4 @@ ${evs}
 </script>
 
 </body>
-  </html>
-  
+</html>
